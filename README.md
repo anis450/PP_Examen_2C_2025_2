@@ -1,121 +1,143 @@
-# Segundo Parcial Paradigmas de Programación
+# Informe Técnico - Paradigmas de Programación
 
-## 1. Modelamiento de un Perceptrón  usando el paradigma de Agentes
+## 1. Modelamiento de un Perceptrón usando el Paradigma de Agentes
 
-El objetivo de esta punto es diseñar e implementar y simular un perceptrón usando Agentes. El perceptrón es un modelo simple de una red neuronal que puede clasificar datos linealmente separables. Utilizando el entorno de MESA en python, simulará el aprendizaje de un perceptrón para clasificar un conjunto de datos.
+### Descripción General
+El perceptrón es un modelo matemático de neurona artificial utilizado para la clasificación binaria de datos linealmente separables. Implementarlo bajo el paradigma de agentes permite representar el proceso de aprendizaje como una interacción dinámica entre componentes autónomos.
 
-### Requisitos:
+### Diseño y Modelo Matemático
+El perceptrón se define mediante:
 
-A. **Interfaz gráfica:**
-   - Diseña una interfaz con sliders para ajustar los valores de:
-     - Tasa de aprendizaje.
-     - Número de iteraciones.
-   - Botones para:
-     - Iniciar la simulación del aprendizaje.
-     - Restablecer la simulación.
+$$ y = f(w_1x_1 + w_2x_2 + b) $$
 
-B. **Modelo del Perceptrón:**
-   - Implementar el algoritmo del perceptrón que pueda clasificar puntos en un plano 2D.
-   - El perceptrón debe tener dos entradas y un valor de sesgo (bias).
-   - Los pesos de las entradas deben actualizarse utilizando la regla de actualización basada en la tasa de aprendizaje.
-   - Inicializa los pesos y el sesgo en valores aleatorios.
+donde \(x_1, x_2\) son las entradas, \(w_1, w_2\) los pesos y \(b\) el sesgo. La función de activación \(f(z)\) devuelve 1 o -1 dependiendo del signo del resultado.
 
-C. **Entrenamiento:**
-   - Generar puntos en el plano 2D que representen los datos de entrenamiento. Deben ser linealmente separables.
-   - Asigna etiquetas (1 o -1) a los puntos según su posición respecto a una línea de separación (la frontera de decisión).
-   - Durante el entrenamiento, ajusta los pesos del perceptrón para aprender a clasificar correctamente los puntos.
-   
-D. **Visualización:**
-   - Mostrar los puntos y la línea de decisión actualizada en tiempo real durante el entrenamiento.
-   - Cambia el color de los puntos correctamente clasificados a verde y los incorrectamente clasificados a rojo.
-   
-E. **Evaluación:**
-   - Después de que el perceptrón se entrene, verificar su rendimiento clasificando un nuevo conjunto de puntos de prueba.
-   - Muestra el porcentaje de puntos clasificados correctamente.
+Las reglas de aprendizaje son:
 
-### Entregables:
-- Diseño de la solución (Sugerencia: use herramientas matemáticas para el diseño)
-- Código completo con el modelo de perceptrón.
-- Capturas de pantalla de la simulación mostrando el entrenamiento y la clasificación de los datos.
-- Un informe explicando cómo funciona el perceptrón y cómo fue implementado, incluyendo los resultados obtenidos.
+$$ w_i = w_i + \eta (y_{real} - y_{predicho})x_i $$
+$$ b = b + \eta (y_{real} - y_{predicho}) $$
 
-## 2. Implementación de una Calculadora Basada en el Paradigma de Agentes
+### Implementación en MESA
 
-El objetivo de esta punto es implementar una calculadora utilizando el paradigma de agentes. En este enfoque, cada operación aritmética (suma, resta, multiplicación, división, etc.) será manejada por un agente autónomo. Estos agentes deben comunicarse entre sí para resolver expresiones matemáticas complejas.
+#### Estructura del proyecto
+```
+perceptron_mesa/
+├── agent.py
+├── model.py
+└── server.py
+```
 
-### Descripción del Problema
+- **agent.py:** Define la clase `PerceptronAgent`, encargada de realizar las predicciones y entrenarse modificando sus pesos.
+- **model.py:** Contiene `PerceptronModel`, que genera puntos de datos aleatorios y coordina el entrenamiento a través del scheduler.
+- **server.py:** Inicia el servidor visual de MESA, permitiendo ajustar parámetros como la tasa de aprendizaje e iteraciones.
 
- Se tiene que diseñar una calculadora distribuida en la que cada operación es gestionada por un **agente**. Cada agente será responsable de una operación específica y debe interactuar con otros agentes cuando se le solicite realizar una operación combinada.
+#### Ejecución
+1. Instalar dependencias:
+   ```bash
+   pip install mesa
+   ```
+2. Ejecutar el servidor:
+   ```bash
+   python server.py
+   ```
+3. Acceder a `http://localhost:8521` para visualizar la simulación.
 
-A. **Agentes:**
-   - Crear un conjunto de agentes, donde cada uno sea responsable de una operación:
-     - **Agente Suma**: Gestiona las sumas.
-     - **Agente Resta**: Gestiona las restas.
-     - **Agente Multiplicación**: Gestiona las multiplicaciones.
-     - **Agente División**: Gestiona las divisiones.
-     - **Agente Potencia**: Gestiona las operaciones de potencia.
-     - **Agente Entrada/Salida**: Recibe las expresiones del usuario, las envía a los agentes adecuados y presenta el resultado final.
-   
-B. **Funcionalidad del Sistema:**
-   - El agente **Entrada/Salida** debe recibir una expresión matemática (por ejemplo, `2 + 3 * 4 - 5`) y distribuir las operaciones entre los agentes correspondientes.
-   - Los agentes deben trabajar de manera autónoma, coordinándose entre ellos para resolver expresiones más complejas, como aquellas que requieren manejar precedencia de operadores.
-   - El agente **Entrada/Salida** debe recibir las respuestas de los agentes de operación y devolver el resultado final al usuario.
+Durante la ejecución, la frontera de decisión del perceptrón se ajusta visualmente a medida que el agente aprende.
 
-C. **Requisitos de Implementación:**
-   - Utiliza un lenguaje de programación que soporte el paradigma de agentes (MESA en Python).
-   - Asegúrate de que los agentes puedan manejar cálculos básicos, así como expresiones más complejas que involucren varias operaciones.
-   - Los agentes deben poder gestionar la precedencia de operaciones (por ejemplo, multiplicación y división antes que suma y resta).
-   - Permitir que la calculadora maneje números enteros y decimales.
+### Resultados
+El modelo logra convergencia cuando los datos son linealmente separables. La precisión final se calcula como:
 
-D. **Comunicación entre Agentes:**
-   - Utiliza un mecanismo de comunicación para que los agentes intercambien mensajes (por ejemplo, cuando el agente **Suma** necesita el resultado de una multiplicación para completar su cálculo).
-   - Cada agente debe ser capaz de esperar su turno para recibir los datos necesarios antes de realizar su operación.
+$$ Precisión = \frac{\text{Puntos Correctos}}{\text{Total de Puntos}} \times 100 $$
 
-### Entregables:
-- El diseño de la solución (Sugerencia: use  MBA) 
-- Código completo de la calculadora basada en agentes.
-- Capturas de pantalla o una descripción de cómo funciona la comunicación entre agentes durante el cálculo de una expresión.
-- Un informe explicando la arquitectura del sistema, cómo interactúan los agentes y qué mecanismos de comunicación utilizan.
+### Conclusión
+MESA permite representar de manera visual e interactiva el aprendizaje autónomo del perceptrón, demostrando la utilidad del paradigma de agentes en sistemas de inteligencia distribuida.
 
-## 3. Implementación de una Calculadora Científica usando el Paradigma de Objetos en Kotlin
+---
 
-El objetivo de este punto es desarrollar una aplicación que implemente una **calculadora científica** utilizando el paradigma de **Programación Orientada a Objetos (POO)** en **Kotlin**. Esta calculadora debe ser capaz de realizar operaciones aritméticas básicas, así como operaciones avanzadas propias de una calculadora científica (trigonometría, potencias, logaritmos, etc.).
+## 2. Calculadora Basada en el Paradigma de Agentes
 
-### Descripción del Problema
+### Descripción General
+Este sistema implementa una calculadora descentralizada en la cual cada agente ejecuta una operación matemática independiente. El enfoque permite observar cómo la cooperación de múltiples agentes genera un resultado final coherente.
 
-Diseñar una calculadora científica que debe cumplir con los principios de **encapsulamiento**, **herencia**, y **polimorfismo**. La aplicación debe tener una interfaz amigable para el usuario y permitirle realizar cálculos precisos.
+### Diseño del Sistema
+```
+calculadora_agentes/
+├── agent.py
+├── model.py
+└── main.py
+```
 
-### Requisitos:
+- **agent.py:** Contiene la clase `OperationAgent`, que define agentes para las operaciones `+`, `-`, `*`, `/` y `^`.
+- **model.py:** Implementa `CalculatorModel`, que distribuye las operaciones entre los agentes y coordina su ejecución.
+- **main.py:** Crea el modelo, procesa la expresión y muestra el resultado final.
 
-A. **Clases y Objetos:**
-   - Crea una clase base llamada `Calculadora` que contenga las operaciones básicas:
-     - Suma
-     - Resta
-     - Multiplicación
-     - División
-   - Implementar métodos en la clase `Calculadora` que permitan realizar estas operaciones, asegurando el manejo de posibles excepciones (como la división por cero).
-   
-B. **Herencia y Extensión de Funcionalidades:**
-   - Crea una clase derivada llamada `CalculadoraCientifica` que herede de `Calculadora` y extienda las funcionalidades agregando:
-     - Funciones trigonométricas: seno, coseno, tangente.
-     - Potencias y raíces.
-     - Logaritmos (base 10 y base e).
-     - Funciones exponenciales.
-     - Conversión de grados a radianes y viceversa.
+### Ejemplo de Uso
+1. Ejecutar el script:
+   ```bash
+   python main.py
+   ```
+2. Resultado esperado:
+   ```bash
+   Resultado: 5.0
+   ```
+   (para la expresión `2 + 3`)
 
-C. **Polimorfismo:**
-   - Utiliza polimorfismo para implementar sobrecarga de operadores o métodos que permitan realizar cálculos con distintos tipos de datos (números enteros, decimales).
+### Flujo de Operación
+1. El usuario introduce una expresión (por ejemplo `2 * 4 + 3`).
+2. El modelo la interpreta y distribuye las operaciones a los agentes.
+3. Cada agente calcula su parte de forma independiente.
+4. El sistema combina los resultados finales respetando la jerarquía de operaciones.
 
-D. **Manejo de Excepciones:**
-   - Implementa manejo de excepciones para manejar errores comunes, como la introducción de entradas no válidas o la división por cero.
-   - Muestra mensajes claros y concisos al usuario cuando ocurran estos errores.
+### Conclusión
+La calculadora demuestra cómo el paradigma de agentes puede aplicarse en el procesamiento distribuido de operaciones, ilustrando cooperación, modularidad y escalabilidad en el diseño.
 
-E. **Funcionalidades adicionales:**
-   - Implementar la capacidad de evaluar expresiones completas (por ejemplo, `2 + 3 * sin(45) - log(10)`).
-   - Permite que el usuario guarde un valor en la memoria y lo recupere más tarde (funciones de Memoria M+, M-, MR).
+---
 
-### Entregables:
-- Diseño de la solución (Sugerencia: use UML)
-- Código completo de la calculadora científica en Kotlin.
-- Capturas de pantalla mostrando el funcionamiento de la calculadora, con ejemplos de cálculos básicos y avanzados.
-- Un informe explicando cómo aplicaste los principios de la Programación Orientada a Objetos (encapsulamiento, herencia, polimorfismo) en la solución.
+## 3. Calculadora Científica en Kotlin (Paradigma Orientado a Objetos)
+
+### Descripción General
+Esta calculadora aplica los principios de la Programación Orientada a Objetos (POO) para extender funcionalidades matemáticas de manera modular y reutilizable.
+
+### Estructura del Proyecto
+```
+calculadora_cientifica_kotlin/
+├── Calculadora.kt
+├── CalculadoraCientifica.kt
+└── Main.kt
+```
+
+- **Calculadora.kt:** Clase base con operaciones básicas (`sumar`, `restar`, `multiplicar`, `dividir`).
+- **CalculadoraCientifica.kt:** Subclase que añade funciones científicas (`seno`, `coseno`, `log10`, `raíz`, etc.).
+- **Main.kt:** Ejemplo práctico de uso e impresión de resultados.
+
+### Uso del Programa
+1. Compilar el código:
+   ```bash
+   kotlinc *.kt -include-runtime -d Calculadora.jar
+   ```
+2. Ejecutar:
+   ```bash
+   java -jar Calculadora.jar
+   ```
+3. Salida esperada:
+   ```
+   Suma: 5.0
+   Seno(45°): 0.7071
+   ```
+
+### Principios POO Aplicados
+- **Encapsulamiento:** Cada clase protege su lógica interna.
+- **Herencia:** `CalculadoraCientifica` extiende la funcionalidad de `Calculadora`.
+- **Polimorfismo:** Permite reutilizar métodos con diferentes tipos de datos y comportamientos.
+
+### Conclusión
+El enfoque orientado a objetos permite construir software mantenible, modular y extensible. Kotlin facilita una sintaxis clara para expresar herencia y abstracción de manera natural.
+
+---
+
+## Conclusiones Generales
+Estos tres proyectos ilustran la aplicación de distintos paradigmas de programación:
+- **Paradigma de Agentes:** Útil en simulaciones e inteligencia colectiva.
+- **Paradigma Orientado a Objetos:** Ideal para sistemas escalables y reutilizables.
+
+Ambos enfoques resaltan la importancia de elegir el paradigma adecuado según el contexto del problema, fortaleciendo el diseño lógico y la comprensión de los fundamentos de programación moderna.
